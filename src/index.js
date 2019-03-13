@@ -1,12 +1,44 @@
-import React from 'react';
+import React, { useState} from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import Login from './components/login';
+import LayOut from './components/layout';
+import {BrowserRouter as Router} from "react-router-dom";
 
-ReactDOM.render(<App />, document.getElementById('root'));
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: http://bit.ly/CRA-PWA
-serviceWorker.unregister();
+const AppContext = React.createContext({
+    transition:()=>{},
+    logState: 'logout'
+});
+const App = () =>{
+    const [logState, setLogState] = useState('logout');
+    const transition = (event) => {
+        setLogState(event);
+    }
+    return (
+        <AppContext.Provider value={{transition,logState}}>
+                <div>
+                    {
+                        logState === 'login' ? 
+                        <LayOut />: 
+                        <Login transition={transition} />
+                    } 
+                
+                </div>
+        </AppContext.Provider >
+    );
+}
+
+const Root=()=>{
+    return (
+        <Router>        
+            <App/>      
+        </Router>
+    );
+}
+export default AppContext;
+
+
+
+ReactDOM.render(<Root />, document.getElementById('root'));
+
